@@ -1,4 +1,4 @@
-# Low-Latency Atomic Concurrency Engine
+# Lock-Free MPMC-Queue
 
 
 
