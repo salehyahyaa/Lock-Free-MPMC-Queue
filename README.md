@@ -10,7 +10,7 @@
 
 
 ## Project Strcutre 
-'''
+```
 lockfree-queue-project/
 │
 ├── src/
@@ -47,4 +47,4 @@ lockfree-queue-project/
 ├── CMakeLists.txt
 ├── README.md
 └── .gitignore
-'''
+```
