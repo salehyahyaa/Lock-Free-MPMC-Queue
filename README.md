@@ -41,8 +41,9 @@ lockfree-queue-project/
 │   ├── plots/              (graphs if you generate them)
 │   ├── benchmark_results.csv
 │
-├── report/
+├── documentation/
 │   ├── final_report.pdf
+│   ├── overview.txt
 │
 ├── CMakeLists.txt
 ├── README.md
