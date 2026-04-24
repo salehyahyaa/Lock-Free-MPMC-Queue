@@ -1,1 +1,39 @@
+# Auto detect text files and normalize line endings
+* text=auto
+
+# Explicit text files
+*.py      text
+*.js      text
+*.ts      text
+*.css     text
+*.html    text
+*.md      text
+*.json    text
+*.yml     text
+*.yaml    text
+*.txt     text
+*.sh      text
+
+# C++
+*.cpp     text
+*.hpp     text
+*.h       text
+
+# Binary files
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.pdf     binary
+*.zip     binary
+*.gz      binary
+*.tar     binary
+*.7z      binary
+*.woff    binary
+*.woff2   binary
+*.ttf     binary
+
+# OS files
 .DS_Store
+

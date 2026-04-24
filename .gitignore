@@ -1,0 +1,83 @@
+# =========================
+# OS / System Files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.env/
+.env.*
+.venv/
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# =========================
+# Node / Frontend
+# =========================
+node_modules/
+.next/
+out/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.local
+.env.*.local
+*.key
+*.pem
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# C++ / Build
+# =========================
+*.o
+*.out
+*.exe
+*.a
+*.so
+*.dSYM/
+build/
+
+# =========================
+# Database / Local Data
+# =========================
+*.sqlite3
+*.db
+
+# =========================
+# Misc
+# =========================
+coverage/
+.cache/
+
+# =========================
+# Others - for priacy reasons
+# =========================
+documentation/challenges.txt
