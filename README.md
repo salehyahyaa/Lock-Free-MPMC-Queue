@@ -42,7 +42,7 @@ lockfree-queue-project/
 │   ├── benchmark_results.csv
 │
 ├── documentation/
-│   ├── final_report.pdf
+│   ├── challenges.pdf
 │   ├── overview.txt
 │
 ├── CMakeLists.txt
