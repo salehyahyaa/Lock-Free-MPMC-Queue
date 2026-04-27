@@ -38,7 +38,6 @@ lockfree-queue-project/
 │
 ├── results/
 │   ├── raw_data/
-│   ├── plots/              (graphs if you generate them)
 │   ├── benchmark_results.csv
 │
 ├── documentation/
