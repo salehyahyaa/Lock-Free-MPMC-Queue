@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 struct BenchmarkResult {
     std::string queue_type;
@@ -12,7 +13,16 @@ struct BenchmarkResult {
     double      avg_latency_us;
 };
 
-BenchmarkResult run_lock_based_benchmark(int num_producers, int num_consumers, int ops_per_producer);
-BenchmarkResult run_lock_free_benchmark(int num_producers, int num_consumers, int ops_per_producer);
+struct OpRecord {
+    std::string queue_type;
+    int         thread_id;
+    std::string op_type;
+    int         op_id;
+    double      latency_us;
+};
+
+BenchmarkResult run_lock_based_benchmark(int num_producers, int num_consumers, int ops_per_producer, std::vector<OpRecord>& records);
+BenchmarkResult run_lock_free_benchmark(int num_producers, int num_consumers, int ops_per_producer, std::vector<OpRecord>& records);
 void print_result(const BenchmarkResult& r);
 void save_result_csv(const BenchmarkResult& r, const std::string& filepath);
+void save_raw_csv(const std::vector<OpRecord>& records, const std::string& filepath);
