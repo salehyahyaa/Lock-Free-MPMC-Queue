@@ -1,3 +1,4 @@
+#compiling of the code basically build instructions
 cmake_minimum_required(VERSION 3.15)
 project(LockFreeMPMCQueue CXX)
 
@@ -26,6 +27,3 @@ add_executable(test_lock_free
 )
 target_include_directories(test_lock_free PRIVATE .)
 target_link_libraries(test_lock_free PRIVATE Threads::Threads)
-
-
-#compiling of the code basically build instructions
