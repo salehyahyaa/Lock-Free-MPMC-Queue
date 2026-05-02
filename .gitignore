@@ -86,7 +86,7 @@ documentation/challenges.txt
 build/
 build-verify/
 compile_commands.json
-
+app
+.clangd
 # Large per-op benchmark CSVs (regenerate locally; do not commit)
-results/raw_data/
-results/raw_data_operations/*.csv
+
