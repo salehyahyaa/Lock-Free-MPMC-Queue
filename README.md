@@ -1,4 +1,4 @@
-# Lock-Free MPMC Queue
+# mpmc-queue-benchmarking
 
 Implementation of lock-based and lock-free multi-producer multi-consumer queues with CAS-based synchronization and performance benchmarking.
 
@@ -112,9 +112,13 @@ This project demonstrates both blocking and non-blocking approaches to building 
 ├── README.md
 ├── documentation/
 │   ├── PRD.md
-│   └── Paper.pdf
+│   └── ResearchPaper.pdf
+├── include/
+│   ├── connection.h
+│   └── data_automation.h
 ├── results/
-│   └── benchmark_results.csv
+│   ├── benchmark_results.csv
+│   └── raw_data/            (create before benchmark; per-op CSVs written here)
 ├── src/
 │   ├── benchmark/
 │   │   ├── Benchmark.cpp
@@ -125,6 +129,9 @@ This project demonstrates both blocking and non-blocking approaches to building 
 │   ├── lock_free/
 │   │   ├── LockFreeQueue.cpp
 │   │   └── LockFreeQueue.h
+│   ├── database/
+│   │   ├── connection.cpp
+│   │   └── data_automation.cpp
 │   ├── main.cpp
 │   └── utils/
 │       ├── ThreadPool.h
@@ -140,7 +147,37 @@ This project demonstrates both blocking and non-blocking approaches to building 
 
 - CMake 3.15 or newer
 - A C++17 compatible compiler
-- A platform providing pthreads (CMake uses `find_package(Threads REQUIRED)`)
+- Pthreads (CMake uses `find_package(Threads REQUIRED)`)
+- **Pkg-config** (`pkg-config`) and **libpqxx** (with **libpq** / PostgreSQL client libraries). CMake resolves libpqxx via `pkg_check_modules(PQXX REQUIRED libpqxx)`.
+- **PostgreSQL** server (only required to run the **`benchmark`** executable; the **`test_lock_*`** programs do not use the database).
+
+On macOS with Homebrew, libpq is often keg-only. CMake prepends Homebrew’s `libpq` pkgconfig path when configuring so libpqxx can be found. Typical installs:
+
+```bash
+brew install cmake pkg-config libpqxx
+```
+
+### PostgreSQL setup (benchmark only)
+
+1. Start PostgreSQL and create a database (the default connection string in code uses `dbname=queue_benchmark`; change it in `src/database/connection.cpp` if you use another name or credentials).
+2. Load the schema:
+
+   ```bash
+   psql -d queue_benchmark -f documentation/schema.sql
+   ```
+
+3. If connection fails, edit the constructor in `src/database/connection.cpp` to match your `dbname`, `user`, `host`, and `port`.
+4. To wipe benchmark rows only (keeps `queue_type` seeds): `psql -d queue_benchmark -f documentation/clear_benchmark_data.sql`
+
+### Result directories
+
+Create the folder used for per-operation CSV exports (the benchmark does not create parent directories for you):
+
+```bash
+mkdir -p results/raw_data
+```
+
+Summary results append to `results/benchmark_results.csv` relative to the repo root.
 
 ### Build
 
@@ -153,34 +190,45 @@ cmake ..
 cmake --build . --config Release
 ```
 
-This builds three executables:
+This produces three executables in `build/`:
 
-- `benchmark`
-- `test_lock_based`
-- `test_lock_free`
+- `benchmark` — runs benchmarks, writes CSVs, persists runs to PostgreSQL via libpqxx
+- `test_lock_based` — lock-based queue correctness tests
+- `test_lock_free` — lock-free queue correctness tests
 
-### Run tests
+After a successful configure, CMake can copy `compile_commands.json` into the repo root (for clangd / the C/C++ extension). If IntelliSense cannot find headers under `src/`, run a full build from your binary directory so include flags stay in sync.
 
-From the `build` directory:
+### Run tests (no database)
+
+From the `build` directory (paths match how the tests write under `results/`):
 
 ```bash
 ./test_lock_based
 ./test_lock_free
 ```
 
+Each test run appends rows to `results/test_cases.csv` (created on first write).
+
 ### Run benchmark
 
-From the `build` directory:
+Always run from the **`build`** directory so relative paths resolve:
 
 ```bash
+cd build
 ./benchmark
 ```
 
-The benchmark writes results to:
+To re-run the benchmark **without** opening PostgreSQL or inserting rows (e.g. after your first load is in the DB, for demos), set `PERSONAL_BENCHMARK_NUMB_DB` to `1` in `src/main.cpp` (see comment there). `0` uses normal `DataAutomation`.
 
-- `../results/benchmark_results.csv`
+**Outputs**
 
-So it should be executed from `build` as shown above to match the relative path used by the program.
+| Output | Path (from repo root) | Contents |
+|--------|------------------------|----------|
+| Summary CSV | `results/benchmark_results.csv` | One row per run; `total_ops` = push + pop primitives (2× items); columns: `queue_type`, `num_producers`, `num_consumers`, `total_ops`, `duration_ms`, `throughput_ops_per_sec`, `avg_latency_us` |
+| Raw per-op CSV (lock-based) | `results/raw_data/lock_based_raw.csv` | `queue_type`, `thread_id`, `op_type`, `op_id`, `latency_us` |
+| Raw per-op CSV (lock-free) | `results/raw_data/lock_free_raw.csv` | Same columns as lock-based raw file |
+
+The summary file is opened in append mode: new benchmark sessions add rows. If the file is empty, the program writes the header row automatically. Optional comment lines at the top of a hand-edited CSV are not produced by the benchmark.
 
 ## Acknowledgements
 

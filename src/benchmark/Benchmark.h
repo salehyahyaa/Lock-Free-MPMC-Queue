@@ -7,6 +7,7 @@ struct BenchmarkResult {
     std::string queue_type;
     int         num_producers;
     int         num_consumers;
+    /// Push + pop count (= 2 × items through the queue for balanced runs).
     int         total_ops;
     double      duration_ms;
     double      throughput_ops_per_sec;

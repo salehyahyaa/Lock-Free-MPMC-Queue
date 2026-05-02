@@ -1,0 +1,6 @@
+/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build-verify/CMakeFiles/benchmark.dir
+/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build-verify/CMakeFiles/test_lock_based.dir
+/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build-verify/CMakeFiles/test_lock_free.dir
+/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build-verify/CMakeFiles/copy_compile_commands_json.dir
+/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build-verify/CMakeFiles/edit_cache.dir
+/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build-verify/CMakeFiles/rebuild_cache.dir

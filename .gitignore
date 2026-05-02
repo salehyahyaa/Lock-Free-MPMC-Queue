@@ -57,6 +57,7 @@ yarn-error.log*
 # =========================
 # C++ / Build
 # =========================
+# compile_commands.json is kept at repo root (CMake copy) for clangd/IDE; paths are local.
 *.o
 *.out
 *.exe

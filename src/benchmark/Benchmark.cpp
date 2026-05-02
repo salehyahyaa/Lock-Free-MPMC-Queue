@@ -17,7 +17,8 @@ using hrc = std::chrono::high_resolution_clock;
 BenchmarkResult run_lock_based_benchmark(int num_producers, int num_consumers,
                                           int ops_per_producer, std::vector<OpRecord>& records) {
     LockBasedQueue<int> queue;
-    int total_ops = num_producers * ops_per_producer;
+    const int item_total = num_producers * ops_per_producer;
+    const int reported_total_ops = 2 * item_total;
     std::atomic<int> consumed{0};
     std::atomic<int> op_counter{0};
     std::mutex rec_mutex;
@@ -43,7 +44,7 @@ BenchmarkResult run_lock_based_benchmark(int num_producers, int num_consumers,
     for (int c = 0; c < num_consumers; ++c) {
         consumers.emplace_back([&, c]() {
             while (true) {
-                if (consumed.load(std::memory_order_relaxed) >= total_ops) break;
+                if (consumed.load(std::memory_order_relaxed) >= item_total) break;
                 auto t0 = hrc::now();
                 auto item = queue.try_pop();
                 auto t1 = hrc::now();
@@ -52,7 +53,7 @@ BenchmarkResult run_lock_based_benchmark(int num_producers, int num_consumers,
                     std::lock_guard<std::mutex> lk(rec_mutex);
                     records.push_back({"LockBased", c + 1, "pop", op_counter.fetch_add(1) + 1, lat});
                     int prev = consumed.fetch_add(1, std::memory_order_relaxed);
-                    if (prev + 1 >= total_ops) break;
+                    if (prev + 1 >= item_total) break;
                 } else {
                     std::this_thread::yield();
                 }
@@ -64,14 +65,15 @@ BenchmarkResult run_lock_based_benchmark(int num_producers, int num_consumers,
     for (auto& t : consumers) t.join();
 
     double duration_ms = timer.elapsed_ms();
-    return {"LockBased", num_producers, num_consumers, total_ops, duration_ms,
-            (total_ops / duration_ms) * 1000.0, (duration_ms * 1000.0) / total_ops};
+    return {"LockBased", num_producers, num_consumers, reported_total_ops, duration_ms,
+            (reported_total_ops / duration_ms) * 1000.0, (duration_ms * 1000.0) / reported_total_ops};
 }
 
 BenchmarkResult run_lock_free_benchmark(int num_producers, int num_consumers,
                                          int ops_per_producer, std::vector<OpRecord>& records) {
     LockFreeQueue<int> queue;
-    int total_ops = num_producers * ops_per_producer;
+    const int item_total = num_producers * ops_per_producer;
+    const int reported_total_ops = 2 * item_total;
     std::atomic<int> consumed{0};
     std::atomic<int> op_counter{0};
     std::mutex rec_mutex;
@@ -97,7 +99,7 @@ BenchmarkResult run_lock_free_benchmark(int num_producers, int num_consumers,
     for (int c = 0; c < num_consumers; ++c) {
         consumers.emplace_back([&, c]() {
             while (true) {
-                if (consumed.load(std::memory_order_relaxed) >= total_ops) break;
+                if (consumed.load(std::memory_order_relaxed) >= item_total) break;
                 auto t0 = hrc::now();
                 auto item = queue.try_pop();
                 auto t1 = hrc::now();
@@ -106,7 +108,7 @@ BenchmarkResult run_lock_free_benchmark(int num_producers, int num_consumers,
                     std::lock_guard<std::mutex> lk(rec_mutex);
                     records.push_back({"LockFree", c + 1, "pop", op_counter.fetch_add(1) + 1, lat});
                     int prev = consumed.fetch_add(1, std::memory_order_relaxed);
-                    if (prev + 1 >= total_ops) break;
+                    if (prev + 1 >= item_total) break;
                 } else {
                     std::this_thread::yield();
                 }
@@ -118,8 +120,8 @@ BenchmarkResult run_lock_free_benchmark(int num_producers, int num_consumers,
     for (auto& t : consumers) t.join();
 
     double duration_ms = timer.elapsed_ms();
-    return {"LockFree", num_producers, num_consumers, total_ops, duration_ms,
-            (total_ops / duration_ms) * 1000.0, (duration_ms * 1000.0) / total_ops};
+    return {"LockFree", num_producers, num_consumers, reported_total_ops, duration_ms,
+            (reported_total_ops / duration_ms) * 1000.0, (duration_ms * 1000.0) / reported_total_ops};
 }
 
 void print_result(const BenchmarkResult& r) {

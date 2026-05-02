@@ -1,0 +1,56 @@
+[
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -isystem /opt/homebrew/Cellar/libpqxx/7.10.5/include -isystem /opt/homebrew/opt/libpq/include -isystem /opt/homebrew/Cellar/openssl@3/3.6.2/include -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/benchmark.dir/src/main.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/main.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/main.cpp",
+  "output": "CMakeFiles/benchmark.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -isystem /opt/homebrew/Cellar/libpqxx/7.10.5/include -isystem /opt/homebrew/opt/libpq/include -isystem /opt/homebrew/Cellar/openssl@3/3.6.2/include -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/benchmark.dir/src/benchmark/Benchmark.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/benchmark/Benchmark.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/benchmark/Benchmark.cpp",
+  "output": "CMakeFiles/benchmark.dir/src/benchmark/Benchmark.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -isystem /opt/homebrew/Cellar/libpqxx/7.10.5/include -isystem /opt/homebrew/opt/libpq/include -isystem /opt/homebrew/Cellar/openssl@3/3.6.2/include -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/benchmark.dir/src/database/connection.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/database/connection.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/database/connection.cpp",
+  "output": "CMakeFiles/benchmark.dir/src/database/connection.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -isystem /opt/homebrew/Cellar/libpqxx/7.10.5/include -isystem /opt/homebrew/opt/libpq/include -isystem /opt/homebrew/Cellar/openssl@3/3.6.2/include -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/benchmark.dir/src/database/data_automation.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/database/data_automation.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/database/data_automation.cpp",
+  "output": "CMakeFiles/benchmark.dir/src/database/data_automation.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -isystem /opt/homebrew/Cellar/libpqxx/7.10.5/include -isystem /opt/homebrew/opt/libpq/include -isystem /opt/homebrew/Cellar/openssl@3/3.6.2/include -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/benchmark.dir/src/database/numb_data_automation.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/database/numb_data_automation.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src/database/numb_data_automation.cpp",
+  "output": "CMakeFiles/benchmark.dir/src/database/numb_data_automation.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/test_lock_based.dir/tests/test_lock_based.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/test_lock_based.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/test_lock_based.cpp",
+  "output": "CMakeFiles/test_lock_based.dir/tests/test_lock_based.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/test_lock_based.dir/tests/UnitTestRecorder.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/UnitTestRecorder.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/UnitTestRecorder.cpp",
+  "output": "CMakeFiles/test_lock_based.dir/tests/UnitTestRecorder.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/test_lock_free.dir/tests/test_lock_free.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/test_lock_free.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/test_lock_free.cpp",
+  "output": "CMakeFiles/test_lock_free.dir/tests/test_lock_free.cpp.o"
+},
+{
+  "directory": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/build",
+  "command": "/usr/bin/c++  -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/include -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/src -I/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests -O2 -std=gnu++17 -arch arm64 -o CMakeFiles/test_lock_free.dir/tests/UnitTestRecorder.cpp.o -c /Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/UnitTestRecorder.cpp",
+  "file": "/Users/salehyahya/Desktop/T_Projects/Lock-Free-MPMC-Queue/tests/UnitTestRecorder.cpp",
+  "output": "CMakeFiles/test_lock_free.dir/tests/UnitTestRecorder.cpp.o"
+}
+]
