@@ -82,3 +82,7 @@ coverage/
 # Others - for priacy reasons
 # =========================
 documentation/challenges.txt
+
+build/
+build-verify/
+compile_commands.json
