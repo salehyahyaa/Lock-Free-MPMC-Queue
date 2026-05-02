@@ -118,7 +118,7 @@ This project demonstrates both blocking and non-blocking approaches to building 
 │   └── data_automation.h
 ├── results/
 │   ├── benchmark_results.csv
-│   └── raw_data/            (create before benchmark; per-op CSVs written here)
+│   └── raw_data_operations/  (create before benchmark; per-op CSVs written here)
 ├── src/
 │   ├── benchmark/
 │   │   ├── Benchmark.cpp
@@ -174,7 +174,7 @@ brew install cmake pkg-config libpqxx
 Create the folder used for per-operation CSV exports (the benchmark does not create parent directories for you):
 
 ```bash
-mkdir -p results/raw_data
+mkdir -p results/raw_data_operations
 ```
 
 Summary results append to `results/benchmark_results.csv` relative to the repo root.
@@ -225,8 +225,8 @@ To re-run the benchmark **without** opening PostgreSQL or inserting rows (e.g. a
 | Output | Path (from repo root) | Contents |
 |--------|------------------------|----------|
 | Summary CSV | `results/benchmark_results.csv` | One row per run; `total_ops` = push + pop primitives (2× items); columns: `queue_type`, `num_producers`, `num_consumers`, `total_ops`, `duration_ms`, `throughput_ops_per_sec`, `avg_latency_us` |
-| Raw per-op CSV (lock-based) | `results/raw_data/lock_based_raw.csv` | `queue_type`, `thread_id`, `op_type`, `op_id`, `latency_us` |
-| Raw per-op CSV (lock-free) | `results/raw_data/lock_free_raw.csv` | Same columns as lock-based raw file |
+| Raw per-op CSV (lock-based) | `results/raw_data_operations/lock_based_raw.csv` | `queue_type`, `thread_id`, `op_type`, `op_id`, `latency_us` |
+| Raw per-op CSV (lock-free) | `results/raw_data_operations/lock_free_raw.csv` | Same columns as lock-based raw file |
 
 The summary file is opened in append mode: new benchmark sessions add rows. If the file is empty, the program writes the header row automatically. Optional comment lines at the top of a hand-edited CSV are not produced by the benchmark.
 

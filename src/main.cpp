@@ -12,8 +12,8 @@
 static const int THREAD_COUNTS[]  = {1, 2, 4, 8};
 static const int OPS_PER_PRODUCER = 100000;
 static const std::string CSV_PATH     = "../results/benchmark_results.csv";
-static const std::string RAW_LB_PATH = "../results/raw_data/lock_based_raw.csv";
-static const std::string RAW_LF_PATH = "../results/raw_data/lock_free_raw.csv";
+static const std::string RAW_LB_PATH = "../results/raw_data_operations/lock_based_raw.csv";
+static const std::string RAW_LF_PATH = "../results/raw_data_operations/lock_free_raw.csv";
 
 int main() {
     std::cout << "=== Lock-Free MPMC Queue Benchmark ===\n\n";
