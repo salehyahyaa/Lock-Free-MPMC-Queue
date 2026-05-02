@@ -88,5 +88,7 @@ build-verify/
 compile_commands.json
 app
 .clangd
+build-verify/
+.clangd
 # Large per-op benchmark CSVs (regenerate locally; do not commit)
 
