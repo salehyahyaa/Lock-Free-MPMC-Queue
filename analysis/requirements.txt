@@ -1,0 +1,6 @@
+# Python dependencies for analysis/analyze_results.py
+# sqlite3 is part of the Python standard library — no install needed.
+
+pandas>=1.5
+matplotlib>=3.6
+numpy>=1.23
