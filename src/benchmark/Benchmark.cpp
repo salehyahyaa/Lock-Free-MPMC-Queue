@@ -8,6 +8,7 @@
 #include <atomic>
 #include <iostream>
 #include <fstream>
+#include <filesystem>
 #include <iomanip>
 #include <mutex>
 #include <chrono>
@@ -136,6 +137,12 @@ void print_result(const BenchmarkResult& r) {
 }
 
 void save_result_csv(const BenchmarkResult& r, const std::string& filepath) {
+    std::filesystem::path p(filepath);
+    if (p.has_parent_path()) {
+        std::error_code ec;
+        std::filesystem::create_directories(p.parent_path(), ec);
+    }
+
     std::ifstream check(filepath);
     bool write_header = !check.good() || check.peek() == std::ifstream::traits_type::eof();
     check.close();
@@ -151,6 +158,12 @@ void save_result_csv(const BenchmarkResult& r, const std::string& filepath) {
 }
 
 void save_raw_csv(const std::vector<OpRecord>& records, const std::string& filepath) {
+    std::filesystem::path p(filepath);
+    if (p.has_parent_path()) {
+        std::error_code ec;
+        std::filesystem::create_directories(p.parent_path(), ec);
+    }
+
     std::ofstream file(filepath);
     file << "queue_type,thread_id,op_type,op_id,latency_us\n";
     for (const auto& r : records) {
