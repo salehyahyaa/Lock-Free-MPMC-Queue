@@ -1,47 +1,40 @@
-# mpmc-queue-benchmarking
+# mpmc queue benchmarking
 
-Implementation of lock-based and lock-free multi-producer multi-consumer queues with CAS-based synchronization and performance benchmarking.
-
-
+Comparative research and implementation of multi-producer multi-consumer (MPMC) queues under contention, to benchmark performance between both data structures. The study measures throughput and average per-operation latency across multiple thread counts, together with downstream visualization of the results.
 
 This repository contains two concurrent queue implementations:
-
 - A lock-based MPMC queue using a mutex and condition variable for blocking behavior
 - A lock-free MPMC queue using atomic operations and compare-and-swap (CAS)
 
-It also includes correctness tests and a benchmarking harness that measures throughput and average per-operation latency across multiple thread counts.
-
+---
 ## Theory
 
-### Multi Producer Multi Consumer queues
+### MPMC queues
 
-An MPMC queue is a shared FIFO structure where multiple producer threads push items and multiple consumer threads pop items concurrently. Correctness requires that operations are thread safe and that values are not lost or duplicated under contention.
+We study a shared FIFO queue used by many producers and many consumers at once (MPMC). Each producer enqueues items and each consumer dequeues them, so many threads can touch the same structure in parallel. The work compares one design that uses a lock with one that uses lock-free atomics, then measures how they behave under contention. The next two subsections state the main idea behind each design.
 
-### Lock-based synchronization
+### Lock based approach
 
-The lock-based queue protects a standard `std::queue` with:
+The lock based variant protects shared state with a **mutex** and uses a **condition variable** so consumers can block efficiently when the queue is empty, with a controlled shutdown path. Serialization simplifies reasoning about correctness but can limit scalability when many threads contend on the same lock.
 
-- `std::mutex` to serialize access to the internal queue
-- `std::condition_variable` to allow consumers to sleep while waiting for data instead of busy waiting
-- A shutdown flag that can unblock waiting consumers
+### Lock free approach
 
-This design is straightforward and typically performs well at low to moderate contention, but can suffer when many threads contend for the same lock.
+The lock free variant uses **atomic pointers** and **compare and swap (CAS)** loops to link nodes and advance the logical head/tail without holding a global mutex. Progress is non blocking in the usual sense for such structures, at the cost of retry loops, careful memory ordering, and more complex lifecycle management for nodes.
 
-### Lock-free synchronization
+Together, these models illustrate the trade off between **blocking simplicity** and **lock free contention tolerance** as studied in the concurrency literature (e.g. Michael Scott style linked queues as a conceptual reference for CAS based list queues).
 
-The lock-free queue is a non-blocking algorithm using atomic pointers and CAS. The implementation uses:
+---
+## Features 
 
-- A sentinel dummy head node so `head_` and `tail_` never start as null
-- `std::atomic<Node*>` for `head_`, `tail_`, and `Node::next`
-- CAS loops to link new nodes on push and advance head on pop
+- **MPMC Algorithm Implementation** — Between 2 data strcutres, a **lock-based** queue (mutex + condition variable, with a controlled shutdown path) and a **lock-free** queue (**atomic pointers + CAS** to link nodes and move head/tail).
+- **Design** — queues, benchmark harness, PostgreSQL persistence, standalone tests, and the Python dashboard live in **separate directories and build targets**, instead of one monolithic program.
+- **testing** — dedicated executables exercise **FIFO behavior**, **emptiness**, **multi-producer / multi-consumer** stress, and (for the lock-based design) **shutdown** behavior.
+- **Benchmarking Performance** — symmetric producer–consumer counts (**1, 2, 4, 8**), **100,000 enqueues per producer** per trial, with reported **throughput**, **duration**, **average per-operation latency**, and **total operations** (each **push** and **pop** counted in the total).
+- **Data recording** — **CSV** summary (`results/benchmark_results.csv`) plus **per-operation latency traces** under `results/raw_data_operations/` when raw export is enabled for the run.
+- **Database** — benchmark **runs**, **summary metrics**, and **per-operation latency rows** are stored in a **relational schema** (see `documentation/schema.sql`) using **PostgreSQL**, so results can be **queried and reused** beyond the flat **CSV** files.
+- **Dashboard visualization** — `dashboard/visualization.py` builds an **interactive HTML** report (e.g. `dashboard/out/benchmark_dashboard.html`) from the CSVs for **throughput**, **average latency**, and **latency histograms** from raw traces when present.
 
-The algorithm resembles the Michael and Scott linked queue approach in structure:
-
-- `push` links a new node at `tail->next` using CAS, then attempts to advance `tail_`
-- `try_pop` reads `head_`, `tail_`, and `head->next`; if empty returns `nullopt`, otherwise CAS advances `head_` and deletes the old head node
-
-This design avoids mutex blocking, but it introduces additional complexity and overhead from retry loops, atomic memory ordering, and memory management.
-
+--- 
 ## Design
 
 ### Lock-based queue techniques
@@ -70,167 +63,166 @@ Two standalone test executables validate correctness:
 - Lock-based shutdown behavior to ensure blocked consumers can exit
 
 ### Benchmarking techniques
+- Benchmarks run both lock-based and lock-free MPMC queue implementations at thread counts of **1, 2, 4, and 8 producer(s) plus an equal number of consumer(s)**.
+- In each benchmark session, **every producer performs 100,000 operations**. Thus, at each thread level (with equal number of consumers), the total number of operations per run is:
+    - **1 producer / 1 consumer:** 100,000 operations
+    - **2 producers / 2 consumers:** 200,000 operations
+    - **4 producers / 4 consumers:** 400,000 operations
+    - **8 producers / 8 consumers:** 800,000 operations
+- These levels systematically scale contention from low (2 threads) to high (16 threads).
+- **Metrics measured:**
+    - **Total duration** (milliseconds)
+    - **Throughput** (operations per second)
+    - **Average latency** (microseconds per operation)
+- Results are printed to the console, saved to `results/benchmark_results.csv`, and optionally inserted into a PostgreSQL database for further research and visualization.
+- Detailed, per-operation timings are available under `results/raw_data_operations/` for both queue types.
 
-The benchmark program runs both implementations with thread counts:
-
-- 1, 2, 4, 8 producers and the same number of consumers
-
-Measured metrics:
-
-- Total duration in milliseconds
-- Throughput in operations per second
-- Average per-operation latency in microseconds
-
-Results are printed to stdout and appended to a CSV file.
-
+--- 
 ## Findings
+- **Memory Safety Issues (Lock-Free):**  
+  Under high contention, a thread may deallocate (free) a queue node while another thread is still reading it, causing segmentation faults (use-after-free bugs).  
+  Without hazard pointers or epoch-based memory reclamation, lock-free designs expose threads to undefined behavior—a core challenge absent in lock-based queues.
+- **Atomic Contention Degrades Performance:**  
+  Lock-free queues rely on atomic compare-and-swap (CAS) operations. With more threads, CAS failure rate rises, triggering more retries, which reduces throughput and increases observed latency.
+- **CPU Cache Coherence Overhead:**  
+  Shared variables (e.g., head/tail pointers) are cached by CPU cores. Each update triggers cache invalidations and remote memory access, forcing all threads to constantly synchronize with main memory. The result: noticeable overhead and performance degradation under heavy concurrency.
 
-The repository includes benchmark output in:
+---
+## How To Install & Run 
 
-- `results/benchmark_results.csv`
+### 1. Requirements
 
-From the provided CSV currently in the repo:
+- **C++20**
+- **pthreads**
+- **pkg-config**
+- **libpqxx** (for DB connection)
+- **CMake ≥ 3.15**
 
-- For the tested runs, the lock-based queue achieves higher throughput than the lock-free queue at 1 and 2 thread pairs in the recorded entries.
-- The lock-free queue shows higher average latency and lower throughput in those recorded entries.
-
-Important note about results:
-
-- The CSV contains multiple entries and appears to include repeated runs for some configurations.
-- The benchmark tool appends results to the same CSV file, so the file can include multiple sessions over time.
-
-## Conclusion
-
-This project demonstrates both blocking and non-blocking approaches to building MPMC queues and provides a practical comparison via tests and benchmarking. The lock-based queue offers simpler correctness and efficient blocking behavior with condition variables, while the lock-free queue demonstrates CAS-driven concurrency with retry based progress. The included benchmark results show that lock-free is not automatically faster in practice and that performance depends on contention level, atomic overhead, and implementation details.
-
-## Project Structure
-
-```
-.
-├── CMakeLists.txt
-├── LICENSE
-├── README.md
-├── documentation/
-│   ├── PRD.md
-│   └── ResearchPaper.pdf
-├── include/
-│   ├── connection.h
-│   └── data_automation.h
-├── results/
-│   ├── benchmark_results.csv
-│   └── raw_data_operations/  (create before benchmark; per-op CSVs written here)
-├── src/
-│   ├── benchmark/
-│   │   ├── Benchmark.cpp
-│   │   └── Benchmark.h
-│   ├── lock_based/
-│   │   ├── LockBasedQueue.cpp
-│   │   └── LockBasedQueue.h
-│   ├── lock_free/
-│   │   ├── LockFreeQueue.cpp
-│   │   └── LockFreeQueue.h
-│   ├── database/
-│   │   ├── connection.cpp
-│   │   └── data_automation.cpp
-│   ├── main.cpp
-│   └── utils/
-│       ├── ThreadPool.h
-│       └── Timer.h
-└── tests/
-    ├── test_lock_based.cpp
-    └── test_lock_free.cpp
-```
-
-## How to Install
-
-### Prerequisites
-
-- CMake 3.15 or newer
-- A C++17 compatible compiler
-- Pthreads (CMake uses `find_package(Threads REQUIRED)`)
-- **Pkg-config** (`pkg-config`) and **libpqxx** (with **libpq** / PostgreSQL client libraries). CMake resolves libpqxx via `pkg_check_modules(PQXX REQUIRED libpqxx)`.
-- **PostgreSQL** server (only required to run the **`benchmark`** executable; the **`test_lock_*`** programs do not use the database).
-
-On macOS with Homebrew, libpq is often keg-only. CMake prepends Homebrew’s `libpq` pkgconfig path when configuring so libpqxx can be found. Typical installs:
+### 2. Build C++ Components
 
 ```bash
-brew install cmake pkg-config libpqxx
-```
-
-### PostgreSQL setup (benchmark only)
-
-1. Start PostgreSQL and create a database (the default connection string in code uses `dbname=queue_benchmark`; change it in `src/database/connection.cpp` if you use another name or credentials).
-2. Load the schema:
-
-   ```bash
-   psql -d queue_benchmark -f documentation/schema.sql
-   ```
-
-3. If connection fails, edit the constructor in `src/database/connection.cpp` to match your `dbname`, `user`, `host`, and `port`.
-4. To wipe benchmark rows only (keeps `queue_type` seeds): `psql -d queue_benchmark -f documentation/clear_benchmark_data.sql`
-
-### Result directories
-
-Create the folder used for per-operation CSV exports (the benchmark does not create parent directories for you):
-
-```bash
-mkdir -p results/raw_data_operations
-```
-
-Summary results append to `results/benchmark_results.csv` relative to the repo root.
-
-### Build
-
-From the repository root:
-
-```bash
-mkdir -p build
-cd build
+git clone https://github.com/salehyahyaa/Lock-Free-MPMC-Queue.git
+cd Lock-Free-MPMC-Queue
+mkdir build && cd build
 cmake ..
 cmake --build . --config Release
 ```
 
-This produces three executables in `build/`:
+### 3. Setup PostgreSQL (for DB-logged benchmarks)
 
-- `benchmark` — runs benchmarks, writes CSVs, persists runs to PostgreSQL via libpqxx
-- `test_lock_based` — lock-based queue correctness tests
-- `test_lock_free` — lock-free queue correctness tests
+- Ensure PostgreSQL server is running and create the `queue_benchmark` database.
+- Load schema:
+    ```bash
+    psql -d queue_benchmark -f documentation/schema.sql
+    ```
+- Adjust connection details in `src/database/connection.cpp` if needed.
 
-After a successful configure, CMake can copy `compile_commands.json` into the repo root (for clangd / the C/C++ extension). If IntelliSense cannot find headers under `src/`, run a full build from your binary directory so include flags stay in sync.
+### 4. Run Benchmarks
 
-### Run tests (no database)
+From `build/`:
+```bash
+./benchmark
+```
+- Summary: `results/benchmark_results.csv`
+- Raw data: `results/raw_data_operations/`
+- Database integration is optional but recommended for full research replication.
 
-From the `build` directory (paths match how the tests write under `results/`):
+### 5. Run Correctness Tests
 
+From `build/`:
 ```bash
 ./test_lock_based
 ./test_lock_free
 ```
+- Output appended to `results/test_cases.csv`.
 
-Each test run appends rows to `results/test_cases.csv` (created on first write).
+### 6. Data Visualization
 
-### Run benchmark
-
-Always run from the **`build`** directory so relative paths resolve:
+- All Python scripts for plotting and analysis are in the `data_viz/` directory.
+- The `requirements.txt` for Python dependencies is also in `data_viz/`.
 
 ```bash
-cd build
-./benchmark
+cd data_viz
+pip install -r requirements.txt
+python plot_results.py  # or your specific script
+```
+> _Upload your own data visualizations to this directory and showcase them in reports/slides._
+
+---
+
+## 🛠️ Technologies Used
+
+- **C++20:** Queue implementations, benchmarking, testing
+- **libpqxx**: PostgreSQL C++ driver for DB integration
+- **Python (pandas, matplotlib):** Data analysis & visualization (see `data_viz/`)
+- **PostgreSQL:** For structured storage of benchmark results
+
+---
+## Dependencies
+
+**C++ 20:**  
+- CMake ≥ 3.15  
+- libpqxx (and dependencies: libpq/PostgreSQL client libs)  
+- pthreads
+
+**Python:**  
+See `data_viz/requirements.txt` for all required packages  
+(pandas, matplotlib, and related libraries)
+
+--- 
+
+## Project Structure
+```
+mpmc-queue-benchmarking/
+├── dashboard/
+│   ├── requirements.txt
+│   └── visualization.py
+├── documentation/
+│   ├── PRD.md
+│   ├── ResearchPaper.pdf
+│   ├── clear_benchmark_data.sql
+│   └── schema.sql
+├── include/
+│   ├── connection.h
+│   ├── data_automation.h
+│   └── numb_data_automation.h
+├── results/
+│   ├── benchmark_results.csv
+│   ├── pre-test_results.csv
+│   └── raw_data_operations/
+├── src/
+│   ├── benchmark/
+│   ├── database/
+│   ├── lock_based/
+│   ├── lock_free/
+│   ├── main.cpp
+│   └── utils/
+├── tests/
+│   ├── QueueMpmcScenarios.h
+│   ├── TestMacros.h
+│   ├── UnitTestRecorder.cpp
+│   ├── UnitTestRecorder.h
+│   ├── test_lock_based.cpp
+│   └── test_lock_free.cpp
+├── .gitattributes
+├── .gitignore
+├── CMakeLists.txt
+├── LICENSE
+├── README.md
 ```
 
-To re-run the benchmark **without** opening PostgreSQL or inserting rows (e.g. after your first load is in the DB, for demos), set `PERSONAL_BENCHMARK_NUMB_DB` to `1` in `src/main.cpp` (see comment there). `0` uses normal `DataAutomation`.
+---
 
-**Outputs**
+## 📄 License
+Apache License
 
-| Output | Path (from repo root) | Contents |
-|--------|------------------------|----------|
-| Summary CSV | `results/benchmark_results.csv` | One row per run; `total_ops` = push + pop primitives (2× items); columns: `queue_type`, `num_producers`, `num_consumers`, `total_ops`, `duration_ms`, `throughput_ops_per_sec`, `avg_latency_us` |
-| Raw per-op CSV (lock-based) | `results/raw_data_operations/lock_based_raw.csv` | `queue_type`, `thread_id`, `op_type`, `op_id`, `latency_us` |
-| Raw per-op CSV (lock-free) | `results/raw_data_operations/lock_free_raw.csv` | Same columns as lock-based raw file |
+---
 
-The summary file is opened in append mode: new benchmark sessions add rows. If the file is empty, the program writes the header row automatically. Optional comment lines at the top of a hand-edited CSV are not produced by the benchmark.
-
-## Acknowledgements
-
+## ✍️ Acknowledgements
 - Saleh Yahya
 - Christopher Fawaz
+
+---
+_For full methodology and results, visit either of the following locations
+- [ResearchGate: Concurrent Queue Performance Benchmarking](https://www.researchgate.net/publication/404301162_Concurrent_Queue_Performance_Benchmarking)
+-see [documentation/ResearchPaper.pdf](./documentation/ResearchPaper.pdf)._
