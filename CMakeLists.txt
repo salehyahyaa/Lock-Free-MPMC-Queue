@@ -24,7 +24,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 pkg_check_modules(PQXX REQUIRED IMPORTED_TARGET libpqxx)
-
+s
 # ---- Benchmark ---------------------------------------------------------------
 add_executable(benchmark
     src/main.cpp
