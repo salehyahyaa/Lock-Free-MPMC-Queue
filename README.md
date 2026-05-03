@@ -141,6 +141,8 @@ From `build/`:
 From the repository root:
 
 ```bash
+python3 -m venv venv
+source venv/bin/activate
 pip install -r dashboard/requirements.txt
 python3 dashboard/visualization.py
 ```
