@@ -145,7 +145,8 @@ pip install -r dashboard/requirements.txt
 python3 dashboard/visualization.py
 ```
 
-Open `dashboard/out/benchmark_dashboard.html` in a browser. Uses `results/benchmark_results.csv` and, if present, raw CSVs under `results/raw_data_operations/`.
+- Open `dashboard/out/benchmark_dashboard.html` in a browser.
+- Data: `results/benchmark_results.csv`; optional raw CSVs in `results/raw_data_operations/`.
 
 ---
 
