@@ -1,5 +1,7 @@
 ## Project Overview
 
+**Repository:** [mpmc-queue-benchmarking](https://github.com/salehyahya/mpmc-queue-benchmarking) — comparative MPMC queue benchmarking (C++ harness, PostgreSQL optional, Python dashboard).
+
 This project aims to design and implement two concurrent queue systems: a traditional lock-based queue and a lock-free queue using atomic operations. The purpose is to analyze how different synchronization techniques impact system performance in a multi-threaded environment.
 
 By comparing these two approaches, the project will provide insight into key operating systems concepts such as thread synchronization, contention, and non-blocking algorithms, while also reflecting real-world systems used in high-performance computing and low-latency applications.

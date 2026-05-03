@@ -1,4 +1,4 @@
-# mpmc queue benchmarking
+# mpmc-queue-benchmarking
 
 Comparative research and implementation of multi-producer multi-consumer (MPMC) queues under contention, to benchmark performance between both data structures. The study measures throughput and average per-operation latency across multiple thread counts, together with downstream visualization of the results.
 
@@ -101,8 +101,8 @@ Two standalone test executables validate correctness:
 ### 2. Build C++ Components
 
 ```bash
-git clone https://github.com/salehyahyaa/Lock-Free-MPMC-Queue.git
-cd Lock-Free-MPMC-Queue
+git clone https://github.com/salehyahya/mpmc-queue-benchmarking.git
+cd mpmc-queue-benchmarking
 mkdir build && cd build
 cmake ..
 cmake --build . --config Release
@@ -142,8 +142,10 @@ From the repository root:
 
 ```bash
 pip install -r dashboard/requirements.txt
-python3 dashboard/visualization.py```
+python3 dashboard/visualization.py
 ```
+
+Open `dashboard/out/benchmark_dashboard.html` in a browser. Uses `results/benchmark_results.csv` and, if present, raw CSVs under `results/raw_data_operations/`.
 
 ---
 
@@ -151,7 +153,7 @@ python3 dashboard/visualization.py```
 
 - **C++20:** Queue implementations, benchmarking, testing
 - **libpqxx**: PostgreSQL C++ driver for DB integration
-- **Python (pandas, matplotlib):** Data analysis & visualization (see `data_viz/`)
+- **Python:** Data visualization via `dashboard/visualization.py` (see `dashboard/requirements.txt`)
 - **PostgreSQL:** For structured storage of benchmark results
 
 ---
@@ -163,8 +165,7 @@ python3 dashboard/visualization.py```
 - pthreads
 
 **Python:**  
-See `data_viz/requirements.txt` for all required packages  
-(pandas, matplotlib, and related libraries)
+See `dashboard/requirements.txt`.
 
 --- 
 

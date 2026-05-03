@@ -16,7 +16,7 @@ static const std::string RAW_LB_PATH = "../results/raw_data_operations/lock_base
 static const std::string RAW_LF_PATH = "../results/raw_data_operations/lock_free_raw.csv";
 
 int main() {
-    std::cout << "=== Lock-Free MPMC Queue Benchmark ===\n\n";
+    std::cout << "=== mpmc-queue-benchmarking ===\n\n";
 
 #if PERSONAL_BENCHMARK_NUMB_DB
     NumbDataAutomation store;

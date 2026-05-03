@@ -1,6 +1,6 @@
 #compiling of the code basically build instructions
 cmake_minimum_required(VERSION 3.15)
-project(LockFreeMPMCQueue CXX)
+project(mpmc_queue_benchmarking CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,7 +24,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 pkg_check_modules(PQXX REQUIRED IMPORTED_TARGET libpqxx)
-s
+
 # ---- Benchmark ---------------------------------------------------------------
 add_executable(benchmark
     src/main.cpp
