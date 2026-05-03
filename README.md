@@ -138,19 +138,16 @@ From `build/`:
 
 ### 6. Data Visualization
 
-- All Python scripts for plotting and analysis are in the `data_viz/` directory.
-- The `requirements.txt` for Python dependencies is also in `data_viz/`.
+From the repository root:
 
 ```bash
-cd data_viz
-pip install -r requirements.txt
-python plot_results.py  # or your specific script
+pip install -r dashboard/requirements.txt
+python3 dashboard/visualization.py```
 ```
-> _Upload your own data visualizations to this directory and showcase them in reports/slides._
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - **C++20:** Queue implementations, benchmarking, testing
 - **libpqxx**: PostgreSQL C++ driver for DB integration
@@ -223,6 +220,6 @@ Apache License
 - Christopher Fawaz
 
 ---
-_For full methodology and results, visit either of the following locations
-- [ResearchGate: Concurrent Queue Performance Benchmarking](https://www.researchgate.net/publication/404301162_Concurrent_Queue_Performance_Benchmarking)
--see [documentation/ResearchPaper.pdf](./documentation/ResearchPaper.pdf)._
+For full methodology and results, visit either of the following locations:
+- **ResearchGate:** [Concurrent Queue Performance Benchmarking](https://www.researchgate.net/publication/404301162_Concurrent_Queue_Performance_Benchmarking)
+- See also: [documentation/ResearchPaper.pdf](documentation/ResearchPaper.pdf)
