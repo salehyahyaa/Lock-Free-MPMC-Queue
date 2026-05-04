@@ -214,12 +214,12 @@ mpmc-queue-benchmarking/
 
 ---
 
-## 📄 License
+## License
 Apache License
 
 ---
 
-## ✍️ Acknowledgements
+## Acknowledgements
 - Saleh Yahya
 - Christopher Fawaz
 
