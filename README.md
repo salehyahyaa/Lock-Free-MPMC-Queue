@@ -1,4 +1,4 @@
-# mpmc-queue-benchmarking
+# MPMC-Queue-Benchmarking
 
 Comparative research and implementation of multi-producer multi-consumer (MPMC) queues under contention, to benchmark performance between both data structures. The study measures throughput and average per-operation latency across multiple thread counts, together with downstream visualization of the results.
 
