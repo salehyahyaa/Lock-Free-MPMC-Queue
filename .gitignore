@@ -95,3 +95,5 @@ results/raw_data_operations/*.csv
 # Python dashboard generated HTML
 dashboard/out/
 
+# OTHER 
+Data Viz Pictures/
