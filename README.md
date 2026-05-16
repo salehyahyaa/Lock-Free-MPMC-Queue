@@ -178,19 +178,26 @@ mpmc-queue-benchmarking/
 ├── dashboard/
 │   ├── requirements.txt
 │   └── visualization.py
+│
 ├── documentation/
+│   ├── database/
+│   │   ├── schema.sql
+│   │   └── db_diagram.pdf
+│   │
+│   ├── flowchart_diagram.svg
 │   ├── PRD.md
-│   ├── ResearchPaper.pdf
-│   ├── clear_benchmark_data.sql
-│   └── schema.sql
+│   └── ResearchPaper.pdf
+│
 ├── include/
 │   ├── connection.h
 │   ├── data_automation.h
 │   └── numb_data_automation.h
+│
 ├── results/
 │   ├── benchmark_results.csv
 │   ├── pre-test_results.csv
 │   └── raw_data_operations/
+│
 ├── src/
 │   ├── benchmark/
 │   ├── database/
@@ -198,6 +205,7 @@ mpmc-queue-benchmarking/
 │   ├── lock_free/
 │   ├── main.cpp
 │   └── utils/
+│
 ├── tests/
 │   ├── QueueMpmcScenarios.h
 │   ├── TestMacros.h
@@ -205,11 +213,12 @@ mpmc-queue-benchmarking/
 │   ├── UnitTestRecorder.h
 │   ├── test_lock_based.cpp
 │   └── test_lock_free.cpp
+│
 ├── .gitattributes
 ├── .gitignore
 ├── CMakeLists.txt
 ├── LICENSE
-├── README.md
+└── README.md
 ```
 
 ---
