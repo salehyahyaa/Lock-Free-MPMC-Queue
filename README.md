@@ -229,8 +229,8 @@ Apache License
 ---
 
 ## Acknowledgements
-- Saleh Yahya
-- Christopher Fawaz
+- Saleh Yahya (First Author)
+- Christopher Fawaz (Second Author)
 
 ---
 For full methodology and results, visit either of the following locations:
