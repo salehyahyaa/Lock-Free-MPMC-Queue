@@ -231,6 +231,7 @@ Apache License
 ## Acknowledgements
 - Saleh Yahya (First Author)
 - Christopher Fawaz (Second Author)
+- Matthew Clavelli (Third Author)
 
 ---
 For full methodology and results, visit either of the following locations:
